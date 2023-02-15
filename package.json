@@ -1,0 +1,15 @@
+{
+  "name": "sdk2029-top-level-await",
+  "version": "0.0.0",
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20230214.0",
+    "@miniflare/tre": "^3.0.0-next.10",
+    "typescript": "^4.9.5",
+    "wrangler": "2.10.0"
+  },
+  "scripts": {
+    "start": "wrangler dev --experimental-local",
+    "postinstall": "patch < npm-patches/wrangler/esbuild-target.patch"
+  },
+  "private": true
+}

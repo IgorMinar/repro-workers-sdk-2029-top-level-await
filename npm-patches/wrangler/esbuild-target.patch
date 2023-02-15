@@ -1,0 +1,20 @@
+--- node_modules/wrangler/wrangler-dist/cli.js.orig	2023-02-13 17:27:58
++++ node_modules/wrangler/wrangler-dist/cli.js	2023-02-13 17:29:14
+@@ -121580,7 +121580,7 @@
+     metafile: true,
+     bundle: false,
+     format: "esm",
+-    target: "es2020",
++    target: "es2022",
+     write: false,
+     loader: {
+       ".js": "jsx",
+@@ -125793,7 +125793,7 @@
+     inject,
+     external: ["__STATIC_CONTENT_MANIFEST"],
+     format: entry.format === "modules" ? "esm" : "iife",
+-    target: "es2020",
++    target: "es2022",
+     sourcemap: sourcemap ?? true,
+     sourceRoot: destination,
+     minify,
