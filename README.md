@@ -2,9 +2,10 @@
 
 Related issues:
 - https://github.com/cloudflare/workers-sdk/issues/2029
+- https://github.com/cloudflare/workers-sdk/issues/2716
 - https://github.com/cloudflare/workerd/issues/210
 
-Note that `npm-patches/wrangler/esbuild-target.patch` is applied to wrangler via a `postinstall` hook to workaround cloudflare/workers-sdk#2029.
+Note that `npm-patches/wrangler/esbuild-target.patch` is applied to wrangler via a `postinstall` hook to workaround cloudflare/workers-sdk#2716.
 
 ## Repro steps
 ```
