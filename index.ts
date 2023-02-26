@@ -6,13 +6,20 @@ import "./workerd-polyfills";
 import * as esbuild from "esbuild-wasm";
 import esbuildWasm from "./node_modules/esbuild-wasm/esbuild.wasm";
 
-await esbuild.initialize({
-  wasmModule: esbuildWasm,
-  worker: false,
-});
+var esBuildInit: Promise<unknown> | null = null;
 
 export default {
   async fetch() {
+    /** start workaround */
+    if (!esBuildInit) {
+      esBuildInit = esbuild.initialize({
+        wasmModule: esbuildWasm,
+        worker: false,
+      });
+    }
+    await esBuildInit;
+    /** end workaround */
+
     const transformResult = await esbuild.transform(
       '"hello world"'
     );
