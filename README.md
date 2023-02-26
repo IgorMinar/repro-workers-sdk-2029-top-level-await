@@ -1,7 +1,6 @@
-# Repro for top-level await issues in wrangler and workerd
+# Repro for top-level await issues in wrangler, workerd, and esbuild
 
-The root cause turned out to be missing support for setTimeout(fn, 0) in workerd:
-https://github.com/cloudflare/workerd/issues/389.
+This repo contains a reproduction of failing esbuild program deployed to workerd.
 
 Related issues:
 
@@ -39,3 +38,9 @@ workerd/io/worker.c++:1674: info: uncaught exception; source = Uncaught (in resp
 A hanging Promise was canceled. This happens when the worker runtime is waiting for a Promise from JavaScript to resolve, but has detected that the Promise cannot possibly ever resolve because all code and events related to the Promise's I/O context have already finished.
 ✘ [ERROR] Uncaught (in response) Error: The script will never generate a response.
 ```
+
+## Workaround
+
+The issue can be worked around by not using top-level await and instead invoking esbuild initialization from within a request context. See the following diff for a working version of this code:
+
+https://github.com/IgorMinar/repro-workers-sdk-2029-top-level-await/compare/esbuild-broken...esbuild-fixed
