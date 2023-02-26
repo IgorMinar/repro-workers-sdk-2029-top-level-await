@@ -11,5 +11,8 @@
     "start": "wrangler dev --experimental-local",
     "postinstall": "patch < npm-patches/wrangler/esbuild-target.patch"
   },
-  "private": true
+  "private": true,
+  "dependencies": {
+    "esbuild-wasm": "^0.17.10"
+  }
 }

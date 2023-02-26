@@ -8,6 +8,8 @@ Related issues:
 - https://github.com/cloudflare/workers-sdk/issues/2029
 - https://github.com/cloudflare/workers-sdk/issues/2716
 - https://github.com/cloudflare/workerd/issues/210
+- https://github.com/cloudflare/workerd/issues/389
+- https://github.com/cloudflare/workerd/issues/390
 
 Note that `npm-patches/wrangler/esbuild-target.patch` is applied to wrangler via a `postinstall` hook to workaround cloudflare/workers-sdk#2716.
 
@@ -18,48 +20,22 @@ git clone git@github.com:IgorMinar/repro-workers-sdk-2029-top-level-await.git
 cd repro-workers-sdk-2029-top-level-await
 npm install
 npm start
+# now press 'b' to make a request via a browser
 ```
 
 ## Expected behavior
 
-The dev server starts and responds to http requests and console.log looks as follows:
-
-```
-1.   scheduling microtasks works just fine
-2.   awaiting microtasks works just fine as well
-3.   scheduling tasks from a global scope expression...
-3a.  works just fine
-4.   if I wrap the same task into a promise...
-4+.  and schedule it...
-4+a.  it works just fine
-5.   and only once the promise is awaited...
-> executing a scheduled task #1 <
-> executing a scheduled task #2 <
-5a.  everything still works!
-```
+The browser displays: `"hello world";`
 
 ## Actual behavior
 
-console.log contains exceptions as follows:
+The browser displays: `Error: The script will never generate a response.`
+
+And the following error is displayed in the terminal:
 
 ```
-1.   scheduling microtasks works just fine
-2.   awaiting microtasks works just fine as well
-3.   scheduling tasks from a global scope expression...
-3b.  throws an exception:
-    Error: Some functionality, such as asynchronous I/O, timeouts, and generating random values, can only be performed while handling a request.
-    at index.js:8:3
-4.   if I wrap the same task into a promise...
-4+.  and schedule it...
-4+b.  we once again throw an exception but this time it gets trapped in a promise as expected:
-    Error: Some functionality, such as asynchronous I/O, timeouts, and generating random values, can only be performed while handling a request.
-    at index.js:19:5
-    at new Promise (<anonymous>)
-    at index.js:16:16
-5.   and only once the promise is awaited...
-5b.  the exception is propagated:
-    Error: Some functionality, such as asynchronous I/O, timeouts, and generating random values, can only be performed while handling a request.
-    at index.js:19:5
-    at new Promise (<anonymous>)
-    at index.js:16:16
+workerd/io/worker.c++:2461: info: console warning; description = A hanging Promise was canceled. This happens when the worker runtime is waiting for a Promise from JavaScript to resolve, but has detected that the Promise cannot possibly ever resolve because all code and events related to the Promise's I/O context have already finished.
+workerd/io/worker.c++:1674: info: uncaught exception; source = Uncaught (in response); exception = Error: The script will never generate a response.
+A hanging Promise was canceled. This happens when the worker runtime is waiting for a Promise from JavaScript to resolve, but has detected that the Promise cannot possibly ever resolve because all code and events related to the Promise's I/O context have already finished.
+✘ [ERROR] Uncaught (in response) Error: The script will never generate a response.
 ```
